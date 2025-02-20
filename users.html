@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Users</title>
+    <link rel="stylesheet" href="users.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Registered Users</h2>
+        <button onclick="fetchUsers()">Load Users</button>
+        <ul id="userList" class="user-list"></ul>
+    </div>
+
+    <script>
+        async function fetchUsers() {
+            let token = localStorage.getItem("token");
+            if (!token) {
+                alert("Unauthorized! Please login.");
+                return;
+            }
+
+            let response = await fetch("users.php", {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            let users = await response.json();
+            let list = document.getElementById("userList");
+            list.innerHTML = "";
+            users.forEach(user => {
+                let li = document.createElement("li");
+                li.textContent = `${user.first_name} ${user.last_name} (${user.user_id})`;
+                list.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
